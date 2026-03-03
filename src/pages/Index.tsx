@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import oilLogo from "@/assets/oil-logo.png";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
+import Operations from "@/components/Operations";
 import Dashboard from "@/components/Dashboard";
 import ClaimRewards from "@/components/ClaimRewards";
 import OilSplashIntro from "@/components/OilSplashIntro";
@@ -25,6 +26,12 @@ const Index = () => {
       >
         <Navbar />
         <HeroSection />
+
+        <div className="container px-6">
+          <div className="h-px bg-gold-muted" />
+        </div>
+
+        <Operations />
 
         <div className="container px-6">
           <div className="h-px bg-gold-muted" />
