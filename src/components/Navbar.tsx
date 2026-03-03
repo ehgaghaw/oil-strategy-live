@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Droplets, Wallet, Timer } from "lucide-react";
+import { Wallet, Timer } from "lucide-react";
+import oilIcon from "@/assets/oil-icon.png";
 
 const Navbar = () => {
   const [countdown, setCountdown] = useState(900); // 15 min
@@ -18,9 +19,7 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-gold-muted">
       <div className="container flex items-center justify-between h-16 px-6">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 gradient-gold flex items-center justify-center">
-            <Droplets className="w-4 h-4 text-primary-foreground" />
-          </div>
+          <img src={oilIcon} alt="WTI" className="w-8 h-8 object-contain" />
           <div className="flex flex-col leading-none">
             <span className="font-display text-sm font-bold tracking-tight text-gold">
               WTI / USOR
