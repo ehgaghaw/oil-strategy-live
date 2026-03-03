@@ -1,6 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
+export interface LeaderboardEntry {
+  address: string;
+  balance: number;
+  barrels: number;
+}
+
 export interface DashboardData {
   treasuryValue: number;
   solBalance: number;
@@ -10,10 +16,12 @@ export interface DashboardData {
   isOverBacked: boolean;
   oilReserves: number;
   wtiPrice: number;
+  sorPriceUsd: number;
   circulatingSupply: number;
   holdersCount: number;
   marketCap: number;
   tokenMintConfigured: boolean;
+  leaderboard: LeaderboardEntry[];
 }
 
 export function useDashboardData(refreshInterval = 60000) {
