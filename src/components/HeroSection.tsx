@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowUpRight, Droplets, ChevronDown } from "lucide-react";
+import { ArrowUpRight, ChevronDown } from "lucide-react";
 
 const HeroSection = () => {
   return (
@@ -13,10 +13,7 @@ const HeroSection = () => {
           <div
             key={left}
             className="absolute top-0 w-px h-full oil-drip opacity-30"
-            style={{
-              left: `${left}%`,
-              animationDelay: `${i * 1.2}s`,
-            }}
+            style={{ left: `${left}%`, animationDelay: `${i * 1.2}s` }}
           />
         ))}
       </div>
@@ -48,24 +45,24 @@ const HeroSection = () => {
         className="relative z-10 text-center max-w-5xl"
       >
         <h1 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] font-bold leading-[1.05] tracking-tight text-foreground">
-          HOLD THE TOKEN
+          HOLD <span className="gradient-gold-text">$SOR</span>.
           <br />
-          <span className="gradient-gold-text">EARN CRUDE OIL</span>
+          EARN OIL.
           <br />
-          EVERY 15 MINUTES
+          EVERY 15 MINUTES.
         </h1>
       </motion.div>
 
-      {/* Divider */}
+      {/* Divider - simple lines, no icon */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
         className="relative z-10 flex items-center gap-4 my-10"
       >
-        <div className="w-16 h-px bg-gold-muted" />
-        <Droplets className="w-5 h-5 text-gold" />
-        <div className="w-16 h-px bg-gold-muted" />
+        <div className="w-20 h-px bg-gold-muted" />
+        <div className="w-1.5 h-1.5 bg-gold rotate-45" />
+        <div className="w-20 h-px bg-gold-muted" />
       </motion.div>
 
       {/* Subheading */}
@@ -91,7 +88,6 @@ const HeroSection = () => {
           href="#"
           className="group flex items-center gap-2 px-8 py-3.5 gradient-gold text-primary-foreground font-display text-sm font-semibold tracking-wide hover:brightness-110 transition-all"
         >
-          <Droplets className="w-4 h-4" />
           BUY ON PUMP.FUN
           <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
         </a>
