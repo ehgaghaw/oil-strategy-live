@@ -1,8 +1,8 @@
 {
-  "name": "wti-keeper-bot",
+  "name": "sor-keeper-bot",
   "version": "1.0.0",
   "type": "module",
-  "description": "WTI reward distribution keeper bot",
+  "description": "SOR reward distribution keeper bot — swaps SOL creator fees into $SOR buybacks every 15 minutes",
   "scripts": {
     "start": "node keeper-bot.mjs",
     "dev": "node --watch keeper-bot.mjs"
