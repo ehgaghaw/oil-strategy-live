@@ -141,7 +141,7 @@ const OilSplashIntro = ({ onComplete }: { onComplete: () => void }) => {
                 animate={phase === "leak" ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
                 transition={{ delay: 0.7, duration: 0.6 }}
               >
-                TERMINAL
+                STRATEGIC OIL RESERVE
               </motion.span>
             </motion.div>
           </motion.div>
