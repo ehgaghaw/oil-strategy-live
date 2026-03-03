@@ -32,7 +32,7 @@ const HeroSection = () => {
         <h1 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] font-bold leading-[1.05] tracking-tight text-foreground">
           HOLD <span className="gradient-gold-text">$SOR</span>.
           <br />
-          EARN <span className="gradient-gold-text">$SOR</span>.
+          EARN CRUDE OIL.
           <br />
           EVERY 15 MINUTES.
         </h1>
