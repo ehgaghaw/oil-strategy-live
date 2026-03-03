@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Vault, TrendingUp, Shield, Droplets, BarChart3, Layers } from "lucide-react";
+import { Vault, TrendingUp, Shield, Droplets, BarChart3, Layers, Crown } from "lucide-react";
 import MetricCard from "./MetricCard";
 
 const MOCK_OPERATORS = [
@@ -24,33 +24,37 @@ const Dashboard = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Simulated slight fluctuation
-  const jitter = (base: number) => base * (1 + (Math.sin(tick * 0.3) * 0.002));
+  const jitter = (base: number) => base * (1 + Math.sin(tick * 0.3) * 0.002);
 
   return (
-    <section id="dashboard" className="container px-4 py-20">
+    <section id="dashboard" className="container px-6 py-24">
+      {/* Section header */}
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        className="text-center mb-12"
+        className="flex items-end justify-between mb-8"
       >
-        <h2 className="font-display text-4xl sm:text-5xl tracking-wider">
-          COMMAND CENTER
-        </h2>
-        <div className="flex items-center justify-center gap-4 mt-4">
-          <div className="w-20 h-px bg-border" />
-          <Droplets className="w-4 h-4 text-gold" />
-          <div className="w-20 h-px bg-border" />
+        <div>
+          <span className="font-mono text-[10px] text-flame tracking-[0.3em] uppercase block mb-2">
+            // REAL-TIME DATA
+          </span>
+          <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
+            Analytics Dashboard
+          </h2>
+        </div>
+        <div className="hidden sm:flex items-center gap-2 font-mono text-xs text-muted-foreground">
+          <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+          LIVE
         </div>
       </motion.div>
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-border mb-16">
         <MetricCard
           label="Treasury Value"
           value={`$${jitter(2847293).toLocaleString(undefined, { maximumFractionDigits: 0 })}`}
-          change="+4.2% (24h)"
+          change="+4.2%"
           positive
           icon={Vault}
           delay={0}
@@ -58,77 +62,94 @@ const Dashboard = () => {
         <MetricCard
           label="Net Asset Value"
           value={`$${jitter(0.00847).toFixed(5)}`}
-          change="+1.8% (24h)"
+          change="+1.8%"
           positive
           icon={TrendingUp}
-          delay={0.1}
+          delay={0.05}
         />
         <MetricCard
           label="Backing Ratio"
           value={`${jitter(112.4).toFixed(1)}%`}
-          change="Over-collateralized"
+          change="COLLATERALIZED"
           positive
           icon={Shield}
-          delay={0.2}
+          delay={0.1}
         />
         <MetricCard
-          label="Oil Reserves (bbl)"
-          value={jitter(41250).toLocaleString(undefined, { maximumFractionDigits: 0 })}
-          change="+320 bbl (7d)"
+          label="Oil Reserves"
+          value={`${jitter(41250).toLocaleString(undefined, { maximumFractionDigits: 0 })} bbl`}
+          change="+320 bbl"
           positive
           icon={Droplets}
-          delay={0.3}
+          delay={0.15}
         />
         <MetricCard
           label="Total Supply"
           value="1,000,000,000"
           icon={Layers}
-          delay={0.4}
+          delay={0.2}
         />
         <MetricCard
           label="Holders"
           value="12,847"
-          change="+238 (7d)"
+          change="+238"
           positive
           icon={BarChart3}
-          delay={0.5}
+          delay={0.25}
         />
       </div>
 
-      {/* Top Operators */}
+      {/* Leaderboard */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="bg-card border border-border rounded overflow-hidden"
       >
-        <div className="flex items-center justify-between p-5 border-b border-border">
-          <div className="flex items-center gap-2">
-            <Shield className="w-4 h-4 text-gold" />
-            <span className="font-display text-xl tracking-widest">TOP OPERATORS</span>
+        <div className="flex items-end justify-between mb-4">
+          <div>
+            <span className="font-mono text-[10px] text-flame tracking-[0.3em] uppercase block mb-2">
+              // LEADERBOARD
+            </span>
+            <h3 className="font-display text-2xl font-bold tracking-tight">
+              Top Operators
+            </h3>
           </div>
-          <span className="text-xs font-mono text-muted-foreground tracking-wider">
+          <span className="font-mono text-xs text-muted-foreground">
             134 TOTAL
           </span>
         </div>
 
-        <div className="divide-y divide-border">
-          {MOCK_OPERATORS.map((op) => (
+        <div className="border border-border">
+          {/* Header */}
+          <div className="flex items-center px-5 py-3 bg-secondary border-b border-border font-mono text-[10px] text-muted-foreground tracking-[0.2em] uppercase">
+            <span className="w-12">RANK</span>
+            <span className="flex-1">ADDRESS</span>
+            <span className="text-right">RESERVES</span>
+          </div>
+
+          {MOCK_OPERATORS.map((op, i) => (
             <div
               key={op.rank}
-              className="flex items-center justify-between px-5 py-3.5 hover:bg-crude-light/50 transition-colors"
+              className={`flex items-center px-5 py-3.5 border-b border-border hover:bg-petroleum-light/50 transition-colors group ${
+                i === 0 ? "bg-flame/[0.03]" : ""
+              }`}
             >
-              <div className="flex items-center gap-4">
-                <span
-                  className={`font-display text-lg w-8 ${
-                    op.rank <= 3 ? "text-gold" : "text-muted-foreground"
-                  }`}
-                >
-                  #{op.rank}
-                </span>
-                <span className="font-mono text-sm text-foreground">{op.address}</span>
-              </div>
-              <span className="font-mono text-sm text-gold">
+              <span className="w-12 font-mono text-sm">
+                {op.rank <= 3 ? (
+                  <span className="inline-flex items-center gap-1">
+                    <Crown className={`w-3 h-3 ${op.rank === 1 ? "text-flame" : "text-muted-foreground"}`} />
+                    <span className={op.rank === 1 ? "text-flame font-bold" : "text-foreground"}>
+                      {op.rank}
+                    </span>
+                  </span>
+                ) : (
+                  <span className="text-muted-foreground">{op.rank}</span>
+                )}
+              </span>
+              <span className="flex-1 font-mono text-sm text-foreground group-hover:text-flame-light transition-colors">
+                {op.address}
+              </span>
+              <span className="font-mono text-sm text-foreground tabular-nums">
                 {op.reserves.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>

@@ -1,87 +1,114 @@
 import { motion } from "framer-motion";
-import { Flame, ArrowRight } from "lucide-react";
+import { ArrowUpRight, Zap, ChevronDown } from "lucide-react";
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-[70vh] flex flex-col items-center justify-center text-center px-4 pt-20 overflow-hidden">
-      {/* Vertical oil drip lines */}
-      <div className="absolute inset-0 pointer-events-none opacity-20">
-        {[15, 30, 45, 55, 70, 85].map((left) => (
-          <div
-            key={left}
-            className="absolute top-0 bottom-0 w-px oil-drip"
-            style={{ left: `${left}%` }}
-          />
-        ))}
+    <section className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-16 overflow-hidden">
+      {/* Grid background */}
+      <div className="absolute inset-0 grid-bg opacity-40 pointer-events-none" />
+
+      {/* Scan line effect */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute left-0 right-0 h-32 bg-gradient-to-b from-flame/[0.03] to-transparent animate-scan" />
       </div>
 
+      {/* Status bar */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="inline-flex items-center gap-2 px-4 py-1.5 border border-gold/30 rounded-full mb-8"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.4 }}
+        className="relative z-10 flex items-center gap-2 px-4 py-2 bg-secondary border border-border mb-12"
       >
-        <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
-        <span className="text-xs font-mono tracking-widest uppercase text-muted-foreground">
-          Active Operations
+        <span className="relative flex h-2 w-2">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
+        </span>
+        <span className="font-mono text-xs text-muted-foreground tracking-widest uppercase">
+          SYSTEM ONLINE — EPOCH #247 ACTIVE
         </span>
       </motion.div>
 
-      <motion.h1
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 0.1 }}
-        className="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl leading-[0.9] tracking-wide max-w-5xl"
-      >
-        HOLD THE TOKEN
-        <br />
-        <span className="gradient-gold-text">EARN CRUDE OIL</span>
-        <br />
-        EVERY 30 MINUTES
-      </motion.h1>
-
+      {/* Main heading */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        className="flex items-center gap-4 my-10"
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.1 }}
+        className="relative z-10 text-center max-w-4xl"
       >
-        <div className="w-16 h-px bg-border" />
-        <Flame className="w-5 h-5 text-gold" />
-        <div className="w-16 h-px bg-border" />
+        <h1 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-bold leading-[1.05] tracking-tight">
+          A memecoin
+          <br />
+          with a{" "}
+          <span className="gradient-flame-text">balance sheet</span>
+        </h1>
       </motion.div>
 
+      {/* Subheading */}
       <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
-        className="text-muted-foreground text-sm sm:text-base max-w-xl leading-relaxed mb-10"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        className="relative z-10 mt-8 max-w-lg text-center text-muted-foreground text-base leading-relaxed font-display font-light"
       >
-        Pump.fun creator fees are automatically swapped into oil-backed tokens.
-        Rewards accrue every 30 minutes — connect your wallet and claim anytime.
-        No staking, no lock-ups.
+        Creator fees flow into a treasury. Every 30 minutes, SOL converts to USDC 
+        and distributes pro-rata to every $WTI holder. No staking. No lock-ups.
       </motion.p>
 
+      {/* CTA row */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}
-        className="flex flex-col sm:flex-row gap-4"
+        transition={{ delay: 0.5 }}
+        className="relative z-10 flex flex-col sm:flex-row gap-3 mt-12"
       >
         <a
           href="#"
-          className="flex items-center justify-center gap-2 px-8 py-3 gradient-gold rounded font-semibold text-sm tracking-wider uppercase text-primary-foreground hover:opacity-90 transition-opacity"
+          className="group flex items-center gap-2 px-8 py-3.5 bg-flame text-primary-foreground font-display text-sm font-semibold tracking-wide hover:brightness-110 transition-all"
         >
-          <Flame className="w-4 h-4" />
-          Buy on Pump.fun
-          <ArrowRight className="w-4 h-4" />
+          <Zap className="w-4 h-4" />
+          BUY ON PUMP.FUN
+          <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
         </a>
         <a
           href="#dashboard"
-          className="flex items-center justify-center gap-2 px-8 py-3 border border-gold/40 rounded font-semibold text-sm tracking-wider uppercase text-gold hover:bg-gold/10 transition-colors"
+          className="flex items-center justify-center gap-2 px-8 py-3.5 border border-flame/30 text-flame font-display text-sm font-semibold tracking-wide hover:bg-flame/5 transition-colors"
         >
-          View Dashboard
+          VIEW ANALYTICS
         </a>
+      </motion.div>
+
+      {/* Stats row */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.7 }}
+        className="relative z-10 flex flex-wrap justify-center gap-8 sm:gap-16 mt-20 mb-8"
+      >
+        {[
+          { label: "TREASURY", value: "$2.84M" },
+          { label: "HOLDERS", value: "12,847" },
+          { label: "BACKING", value: "112.4%" },
+        ].map((stat) => (
+          <div key={stat.label} className="text-center">
+            <div className="font-mono text-2xl sm:text-3xl font-bold text-foreground">
+              {stat.value}
+            </div>
+            <div className="font-mono text-[10px] text-muted-foreground tracking-[0.2em] mt-1">
+              {stat.label}
+            </div>
+          </div>
+        ))}
+      </motion.div>
+
+      {/* Scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1"
+      >
+        <span className="font-mono text-[10px] text-muted-foreground tracking-[0.3em]">SCROLL</span>
+        <ChevronDown className="w-4 h-4 text-muted-foreground animate-bounce" />
       </motion.div>
     </section>
   );

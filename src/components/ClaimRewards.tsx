@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Flame, Wallet, ArrowRight, History, Droplets } from "lucide-react";
+import { Fuel, Wallet, ArrowRight, History, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
-// WTI crude oil spot price approximation (USD per barrel)
 const OIL_PRICE_USD = 68.5;
 
 interface PendingReward {
@@ -61,9 +60,7 @@ const ClaimRewards = () => {
       const { data, error } = await supabase.functions.invoke("claim-rewards", {
         body: { wallet_address: wallet },
       });
-
       if (error) throw error;
-
       setPendingUsdc(data.pending_usdc || 0);
       setPendingRewards(data.pending_rewards || []);
       setClaimHistory(data.claim_history || []);
@@ -82,11 +79,8 @@ const ClaimRewards = () => {
       const { data, error } = await supabase.functions.invoke("claim-rewards", {
         body: { wallet_address: walletAddress, action: "claim" },
       });
-
       if (error) throw error;
-
       setClaimResult(data.message);
-      // Refresh
       await fetchRewards(walletAddress);
     } catch (err) {
       console.error("Claim failed:", err);
@@ -97,150 +91,154 @@ const ClaimRewards = () => {
   }, [walletAddress, pendingUsdc, fetchRewards]);
 
   useEffect(() => {
-    if (walletAddress) {
-      fetchRewards(walletAddress);
-    }
+    if (walletAddress) fetchRewards(walletAddress);
   }, [walletAddress, fetchRewards]);
 
   const barrelsEquivalent = pendingUsdc / OIL_PRICE_USD;
 
   return (
-    <section className="container px-4 py-16">
+    <section className="container px-6 py-24">
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        className="text-center mb-10"
+        className="mb-8"
       >
-        <h2 className="font-display text-4xl sm:text-5xl tracking-wider">
-          CLAIM REWARDS
+        <span className="font-mono text-[10px] text-flame tracking-[0.3em] uppercase block mb-2">
+          // REWARDS ENGINE
+        </span>
+        <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
+          Claim Your Crude
         </h2>
-        <div className="flex items-center justify-center gap-4 mt-4">
-          <div className="w-20 h-px bg-border" />
-          <Droplets className="w-4 h-4 text-gold" />
-          <div className="w-20 h-px bg-border" />
-        </div>
       </motion.div>
 
-      <div className="max-w-lg mx-auto">
-        {!walletAddress ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-card border border-border rounded p-8 text-center"
-          >
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-secondary flex items-center justify-center">
-              <Flame className="w-8 h-8 text-gold" />
-            </div>
-            <h3 className="font-display text-2xl tracking-wider mb-2">
-              ACCESS REQUIRED
-            </h3>
-            <p className="text-sm text-muted-foreground mb-6">
-              Connect your Solana wallet to view and claim your crude oil reserves.
-            </p>
-            <button
-              onClick={connectWallet}
-              disabled={connecting}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 gradient-gold rounded font-semibold text-sm tracking-wider uppercase text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-50"
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left: Connect / Claim */}
+        <div>
+          {!walletAddress ? (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-card border border-border p-10 flex flex-col items-center text-center h-full justify-center"
             >
-              <Wallet className="w-4 h-4" />
-              {connecting ? "Connecting..." : "Connect Operations"}
-            </button>
-          </motion.div>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-4"
-          >
-            {/* Connected wallet */}
-            <div className="bg-card border border-border rounded p-4 flex items-center justify-between">
-              <div>
-                <span className="text-xs font-mono text-muted-foreground tracking-wider uppercase block">
-                  Connected Wallet
-                </span>
-                <span className="font-mono text-sm text-foreground">
-                  {walletAddress.slice(0, 4)}...{walletAddress.slice(-4)}
-                </span>
+              <div className="w-16 h-16 bg-secondary border border-border flex items-center justify-center mb-6">
+                <Lock className="w-7 h-7 text-muted-foreground" />
               </div>
+              <h3 className="font-display text-xl font-semibold mb-2 tracking-tight">
+                Access Required
+              </h3>
+              <p className="text-sm text-muted-foreground mb-8 max-w-xs">
+                Connect your Solana wallet to view and extract your crude oil reserves.
+              </p>
               <button
-                onClick={disconnectWallet}
-                className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors"
+                onClick={connectWallet}
+                disabled={connecting}
+                className="w-full max-w-xs flex items-center justify-center gap-2 px-6 py-3.5 bg-flame text-primary-foreground font-display text-sm font-semibold tracking-wide hover:brightness-110 transition-all disabled:opacity-50"
               >
-                Disconnect
+                <Wallet className="w-4 h-4" />
+                {connecting ? "CONNECTING..." : "CONNECT WALLET"}
               </button>
-            </div>
-
-            {/* Pending rewards */}
-            <div className="bg-card border border-gold/30 rounded p-6 text-center glow-gold">
-              {loading ? (
-                <div className="animate-pulse text-muted-foreground font-mono text-sm">
-                  Loading reserves...
-                </div>
-              ) : (
-                <>
-                  <span className="text-xs font-mono text-muted-foreground tracking-wider uppercase block mb-2">
-                    Pending Rewards
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-3"
+            >
+              {/* Wallet info */}
+              <div className="bg-card border border-border p-4 flex items-center justify-between">
+                <div>
+                  <span className="font-mono text-[10px] text-muted-foreground tracking-[0.2em] uppercase block">
+                    CONNECTED
                   </span>
-                  <div className="font-mono text-3xl font-bold text-gold mb-1">
-                    ${pendingUsdc.toFixed(6)}
-                  </div>
-                  <div className="text-xs font-mono text-muted-foreground">
-                    ≈ {barrelsEquivalent.toFixed(6)} barrels of crude oil
-                  </div>
-
-                  <button
-                    onClick={claimRewards}
-                    disabled={claiming || pendingUsdc <= 0}
-                    className="mt-6 w-full flex items-center justify-center gap-2 px-6 py-3 gradient-gold rounded font-semibold text-sm tracking-wider uppercase text-primary-foreground hover:opacity-90 transition-opacity disabled:opacity-50"
-                  >
-                    <Flame className="w-4 h-4" />
-                    {claiming ? "Claiming..." : "Claim Rewards"}
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </>
-              )}
-            </div>
-
-            {/* Claim result */}
-            <AnimatePresence>
-              {claimResult && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="bg-secondary border border-border rounded p-4 text-center"
+                  <span className="font-mono text-sm text-foreground">
+                    {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+                  </span>
+                </div>
+                <button
+                  onClick={disconnectWallet}
+                  className="font-mono text-xs text-muted-foreground hover:text-flame transition-colors border border-border px-3 py-1"
                 >
-                  <p className="text-sm font-mono text-foreground">{claimResult}</p>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  DISCONNECT
+                </button>
+              </div>
 
-            {/* Claim history */}
-            {claimHistory.length > 0 && (
-              <div className="bg-card border border-border rounded overflow-hidden">
-                <div className="flex items-center gap-2 p-4 border-b border-border">
-                  <History className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-xs font-mono tracking-wider uppercase text-muted-foreground">
-                    Claim History
+              {/* Rewards */}
+              <div className="bg-card border border-flame/20 p-8 text-center glow-flame">
+                {loading ? (
+                  <div className="font-mono text-sm text-muted-foreground animate-pulse">
+                    Loading reserves...
+                  </div>
+                ) : (
+                  <>
+                    <span className="font-mono text-[10px] text-muted-foreground tracking-[0.2em] uppercase block mb-3">
+                      PENDING REWARDS
+                    </span>
+                    <div className="font-mono text-4xl font-bold text-foreground mb-1">
+                      ${pendingUsdc.toFixed(6)}
+                    </div>
+                    <div className="font-mono text-xs text-muted-foreground">
+                      ≈ {barrelsEquivalent.toFixed(6)} barrels crude
+                    </div>
+                    <button
+                      onClick={claimRewards}
+                      disabled={claiming || pendingUsdc <= 0}
+                      className="mt-8 w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-flame text-primary-foreground font-display text-sm font-semibold tracking-wide hover:brightness-110 transition-all disabled:opacity-50"
+                    >
+                      <Fuel className="w-4 h-4" />
+                      {claiming ? "EXTRACTING..." : "EXTRACT REWARDS"}
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </>
+                )}
+              </div>
+
+              <AnimatePresence>
+                {claimResult && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="bg-success/10 border border-success/20 p-4 text-center"
+                  >
+                    <p className="font-mono text-sm text-success">{claimResult}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          )}
+        </div>
+
+        {/* Right: History */}
+        <div className="bg-card border border-border">
+          <div className="flex items-center gap-2 px-5 py-4 border-b border-border">
+            <History className="w-4 h-4 text-muted-foreground" />
+            <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-muted-foreground">
+              EXTRACTION HISTORY
+            </span>
+          </div>
+          {claimHistory.length > 0 ? (
+            <div className="divide-y divide-border">
+              {claimHistory.map((h, i) => (
+                <div key={i} className="flex items-center justify-between px-5 py-3.5">
+                  <span className="font-mono text-xs text-muted-foreground">
+                    EPOCH #{h.epochs?.epoch_number ?? "—"}
+                  </span>
+                  <span className="font-mono text-sm text-success">
+                    +${Number(h.claimable_usdc).toFixed(6)}
                   </span>
                 </div>
-                <div className="divide-y divide-border">
-                  {claimHistory.map((h, i) => (
-                    <div key={i} className="flex items-center justify-between px-4 py-3">
-                      <span className="text-xs font-mono text-muted-foreground">
-                        Epoch #{h.epochs?.epoch_number ?? "?"}
-                      </span>
-                      <span className="text-sm font-mono text-gold">
-                        +${Number(h.claimable_usdc).toFixed(6)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </motion.div>
-        )}
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <Fuel className="w-8 h-8 text-muted-foreground/30 mb-3" />
+              <span className="font-mono text-xs text-muted-foreground">
+                {walletAddress ? "No extraction history yet" : "Connect wallet to view history"}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );

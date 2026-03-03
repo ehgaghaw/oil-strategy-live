@@ -47,17 +47,17 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        gold: {
-          DEFAULT: "hsl(var(--gold))",
-          light: "hsl(var(--gold-light))",
-          dark: "hsl(var(--gold-dark))",
+        flame: {
+          DEFAULT: "hsl(var(--flame))",
+          light: "hsl(var(--flame-light))",
+          dark: "hsl(var(--flame-dark))",
         },
-        crude: {
-          DEFAULT: "hsl(var(--crude))",
-          light: "hsl(var(--crude-light))",
+        ember: "hsl(var(--ember))",
+        petroleum: {
+          DEFAULT: "hsl(var(--petroleum))",
+          light: "hsl(var(--petroleum-light))",
         },
         success: "hsl(var(--success))",
-        warning: "hsl(var(--warning))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -70,14 +70,13 @@ export default {
         },
       },
       fontFamily: {
-        display: ['Bebas Neue', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
-        body: ['Inter', 'sans-serif'],
+        display: ['Space Grotesk', 'sans-serif'],
+        mono: ['IBM Plex Mono', 'monospace'],
       },
       borderRadius: {
         lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        md: "calc(var(--radius))",
+        sm: "calc(var(--radius))",
       },
       keyframes: {
         "accordion-down": {
@@ -88,20 +87,26 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        "pulse-gold": {
+        "flicker": {
           "0%, 100%": { opacity: "1" },
-          "50%": { opacity: "0.6" },
+          "50%": { opacity: "0.8" },
+          "75%": { opacity: "0.95" },
         },
-        "count-up": {
-          from: { opacity: "0", transform: "translateY(10px)" },
+        "slide-up": {
+          from: { opacity: "0", transform: "translateY(16px)" },
           to: { opacity: "1", transform: "translateY(0)" },
+        },
+        "scan": {
+          "0%": { transform: "translateY(-100%)" },
+          "100%": { transform: "translateY(100vh)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "pulse-gold": "pulse-gold 2s ease-in-out infinite",
-        "count-up": "count-up 0.6s ease-out",
+        "flicker": "flicker 3s ease-in-out infinite",
+        "slide-up": "slide-up 0.5s ease-out",
+        "scan": "scan 8s linear infinite",
       },
     },
   },
