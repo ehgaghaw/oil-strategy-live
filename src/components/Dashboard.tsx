@@ -45,8 +45,8 @@ const Dashboard = () => {
         className="flex items-end justify-between mb-8"
       >
         <div>
-          <span className="font-mono text-[10px] text-gold tracking-[0.3em] uppercase block mb-2">
-            // COMMAND CENTER
+          <span className="font-display text-[11px] text-gold tracking-[0.3em] uppercase block mb-2 font-light italic">
+            COMMAND CENTER
           </span>
           <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
             Reserve Analytics
@@ -130,8 +130,8 @@ const Dashboard = () => {
       <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
         <div className="flex items-end justify-between mb-4">
           <div>
-            <span className="font-mono text-[10px] text-gold tracking-[0.3em] uppercase block mb-2">
-              // TOP HOLDERS
+            <span className="font-display text-[11px] text-gold tracking-[0.3em] uppercase block mb-2 font-light italic">
+              TOP HOLDERS
             </span>
             <h3 className="font-display text-2xl font-bold tracking-tight">
               Leaderboard

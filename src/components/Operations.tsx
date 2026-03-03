@@ -31,8 +31,8 @@ const Operations = () => {
         viewport={{ once: true }}
         className="mb-12"
       >
-        <span className="font-mono text-[10px] text-gold tracking-[0.3em] uppercase block mb-2">
-          // HOW IT WORKS
+        <span className="font-display text-[11px] text-gold tracking-[0.3em] uppercase block mb-2 font-light italic">
+          HOW IT WORKS
         </span>
         <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
           Operations Protocol

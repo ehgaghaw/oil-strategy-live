@@ -76,8 +76,8 @@ const ClaimRewards = () => {
   return (
     <section className="container px-6 py-24">
       <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="mb-8">
-        <span className="font-mono text-[10px] text-gold tracking-[0.3em] uppercase block mb-2">
-          // BUYBACK &amp; REDISTRIBUTE
+        <span className="font-display text-[11px] text-gold tracking-[0.3em] uppercase block mb-2 font-light italic">
+          BUYBACK &amp; REDISTRIBUTE
         </span>
         <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
           Claim Your $SOR
