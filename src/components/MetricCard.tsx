@@ -16,24 +16,33 @@ const MetricCard = ({ label, value, change, positive, icon: Icon, delay = 0 }: M
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ delay, duration: 0.5 }}
-      className="relative p-5 bg-card border border-border rounded hover:border-gold/30 transition-colors group"
+      transition={{ delay, duration: 0.4 }}
+      className="relative bg-card border border-border p-5 group hover:border-flame/30 transition-all duration-300"
     >
-      <div className="flex items-start justify-between mb-3">
-        <span className="text-xs font-mono tracking-widest uppercase text-muted-foreground">
-          {label}
-        </span>
-        <Icon className="w-4 h-4 text-muted-foreground group-hover:text-gold transition-colors" />
+      {/* Top accent line */}
+      <div className="absolute top-0 left-0 w-0 h-[2px] bg-flame group-hover:w-full transition-all duration-500" />
+
+      <div className="flex items-center justify-between mb-4">
+        <div className="w-8 h-8 bg-secondary flex items-center justify-center">
+          <Icon className="w-4 h-4 text-muted-foreground group-hover:text-flame transition-colors" />
+        </div>
+        {change && (
+          <span className={`font-mono text-xs px-2 py-0.5 ${
+            positive 
+              ? "text-success bg-success/10" 
+              : "text-destructive bg-destructive/10"
+          }`}>
+            {change}
+          </span>
+        )}
       </div>
-      <div className="font-mono text-2xl sm:text-3xl font-bold text-foreground animate-count-up">
+
+      <span className="font-mono text-[10px] text-muted-foreground tracking-[0.2em] uppercase block mb-1">
+        {label}
+      </span>
+      <div className="font-mono text-xl sm:text-2xl font-bold text-foreground">
         {value}
       </div>
-      {change && (
-        <span className={`text-xs font-mono mt-2 inline-block ${positive ? "text-success" : "text-destructive"}`}>
-          {change}
-        </span>
-      )}
-      <div className="absolute bottom-0 left-0 right-0 h-px gradient-gold opacity-0 group-hover:opacity-100 transition-opacity" />
     </motion.div>
   );
 };
