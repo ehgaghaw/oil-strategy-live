@@ -2,18 +2,30 @@ import { useState, useEffect } from "react";
 import { Wallet, Timer } from "lucide-react";
 import oilLogo from "@/assets/oil-logo.png";
 
+const EPOCH_MS = 15 * 60 * 1000;
+const DISTRIBUTING_MS = 10_000;
+
 const Navbar = () => {
-  const [countdown, setCountdown] = useState(900); // 15 min
+  const [remaining, setRemaining] = useState(() => EPOCH_MS - (Date.now() % EPOCH_MS));
+  const [distributing, setDistributing] = useState(false);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCountdown((prev) => (prev <= 0 ? 900 : prev - 1));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
+    const tick = () => {
+      const r = EPOCH_MS - (Date.now() % EPOCH_MS);
+      if (r <= 1000 && !distributing) {
+        setDistributing(true);
+        setTimeout(() => setDistributing(false), DISTRIBUTING_MS);
+      }
+      setRemaining(r);
+    };
+    tick();
+    const id = setInterval(tick, 500);
+    return () => clearInterval(id);
+  }, [distributing]);
 
-  const minutes = Math.floor(countdown / 60).toString().padStart(2, "0");
-  const seconds = (countdown % 60).toString().padStart(2, "0");
+  const totalSeconds = Math.floor(remaining / 1000);
+  const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, "0");
+  const seconds = (totalSeconds % 60).toString().padStart(2, "0");
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-gold-muted">
@@ -34,10 +46,10 @@ const Navbar = () => {
           <Timer className="w-3.5 h-3.5 text-gold" />
           <div className="flex flex-col leading-none">
             <span className="font-mono text-[10px] text-gold-muted tracking-widest">
-              NEXT DROP
+              {distributing ? "STATUS" : "NEXT DROP"}
             </span>
-            <span className="font-mono text-lg font-bold text-gold tracking-widest">
-              {minutes}<span className="animate-flicker">:</span>{seconds}
+            <span className={`font-mono text-lg font-bold tracking-widest ${distributing ? "text-gold animate-pulse" : "text-gold"}`}>
+              {distributing ? "DISTRIBUTING..." : <>{minutes}<span className="animate-flicker">:</span>{seconds}</>}
             </span>
           </div>
         </div>
