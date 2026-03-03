@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import oilIcon from "@/assets/oil-icon.png";
+import oilLogo from "@/assets/oil-logo.png";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import Dashboard from "@/components/Dashboard";
@@ -41,7 +41,7 @@ const Index = () => {
         <footer className="border-t border-gold-muted py-10">
           <div className="container px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <img src={oilIcon} alt="WTI" className="w-6 h-6 object-contain" />
+              <img src={oilLogo} alt="WTI" className="w-7 h-7 object-contain" />
               <span className="font-display text-sm font-semibold text-gold">
                 OIL STRATEGY
               </span>
