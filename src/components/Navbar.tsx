@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { Droplets, Wallet, Timer } from "lucide-react";
 
 const Navbar = () => {
-  const [countdown, setCountdown] = useState(1800);
+  const [countdown, setCountdown] = useState(900); // 15 min
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCountdown((prev) => (prev <= 0 ? 1800 : prev - 1));
+      setCountdown((prev) => (prev <= 0 ? 900 : prev - 1));
     }, 1000);
     return () => clearInterval(interval);
   }, []);

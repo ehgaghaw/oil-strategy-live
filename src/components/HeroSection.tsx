@@ -52,7 +52,7 @@ const HeroSection = () => {
           <br />
           <span className="gradient-gold-text">EARN CRUDE OIL</span>
           <br />
-          EVERY 30 MINUTES
+          EVERY 15 MINUTES
         </h1>
       </motion.div>
 
@@ -76,7 +76,7 @@ const HeroSection = () => {
         className="relative z-10 max-w-lg text-center text-muted-foreground text-base leading-relaxed font-display font-light"
       >
         Pump.fun creator fees are automatically swapped into oil-backed tokens.
-        Rewards accrue every 30 minutes — connect your wallet and claim anytime.
+        Rewards accrue every 15 minutes — connect your wallet and claim anytime.
         No staking, no lock-ups.
       </motion.p>
 
