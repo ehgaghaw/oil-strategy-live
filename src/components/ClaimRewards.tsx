@@ -77,10 +77,10 @@ const ClaimRewards = () => {
     <section className="container px-6 py-24">
       <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="mb-8">
         <span className="font-mono text-[10px] text-gold tracking-[0.3em] uppercase block mb-2">
-          // EXTRACTION
+          // BUYBACK &amp; REDISTRIBUTE
         </span>
         <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
-          Claim Your Crude
+          Claim Your $SOR
         </h2>
       </motion.div>
 
@@ -94,7 +94,7 @@ const ClaimRewards = () => {
               </div>
               <h3 className="font-display text-xl font-semibold mb-2 tracking-tight">Access Required</h3>
               <p className="text-sm text-muted-foreground mb-8 max-w-xs">
-                Connect your Solana wallet to view and extract your crude oil reserves.
+                Connect your Solana wallet to view and claim your $SOR rewards.
               </p>
               <button onClick={connectWallet} disabled={connecting}
                 className="w-full max-w-xs flex items-center justify-center gap-2 px-6 py-3.5 gradient-gold text-primary-foreground font-display text-sm font-semibold tracking-wide hover:brightness-110 transition-all disabled:opacity-50">
@@ -119,13 +119,13 @@ const ClaimRewards = () => {
                   <div className="font-mono text-sm text-muted-foreground animate-pulse">Loading reserves...</div>
                 ) : (
                   <>
-                    <span className="font-mono text-[10px] text-gold-muted tracking-[0.2em] uppercase block mb-3">PENDING REWARDS</span>
-                    <div className="font-mono text-4xl font-bold text-gold mb-1">${pendingUsdc.toFixed(6)}</div>
-                    <div className="font-mono text-xs text-muted-foreground">≈ {barrelsEquivalent.toFixed(6)} barrels crude</div>
+                    <span className="font-mono text-[10px] text-gold-muted tracking-[0.2em] uppercase block mb-3">CLAIMABLE $SOR</span>
+                    <div className="font-mono text-4xl font-bold text-gold mb-1">{pendingUsdc.toFixed(6)} SOR</div>
+                    <div className="font-mono text-xs text-muted-foreground">≈ {barrelsEquivalent.toFixed(4)} barrels crude equivalent</div>
                     <button onClick={claimRewards} disabled={claiming || pendingUsdc <= 0}
                       className="mt-8 w-full flex items-center justify-center gap-2 px-6 py-3.5 gradient-gold text-primary-foreground font-display text-sm font-semibold tracking-wide hover:brightness-110 transition-all disabled:opacity-50">
                       <Droplets className="w-4 h-4" />
-                      {claiming ? "EXTRACTING..." : "EXTRACT REWARDS"}
+                      {claiming ? "CLAIMING..." : "CLAIM $SOR"}
                       <ArrowRight className="w-4 h-4" />
                     </button>
                   </>
@@ -147,14 +147,14 @@ const ClaimRewards = () => {
         <div className="bg-oil-light border border-gold-muted">
           <div className="flex items-center gap-2 px-5 py-4 border-b border-gold-muted">
             <History className="w-4 h-4 text-gold-muted" />
-            <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-gold-muted">EXTRACTION HISTORY</span>
+            <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-gold-muted">CLAIM HISTORY</span>
           </div>
           {claimHistory.length > 0 ? (
             <div className="divide-y divide-border">
               {claimHistory.map((h, i) => (
                 <div key={i} className="flex items-center justify-between px-5 py-3.5">
                   <span className="font-mono text-xs text-muted-foreground">EPOCH #{h.epochs?.epoch_number ?? "—"}</span>
-                  <span className="font-mono text-sm text-gold">+${Number(h.claimable_usdc).toFixed(6)}</span>
+                  <span className="font-mono text-sm text-gold">+{Number(h.claimable_usdc).toFixed(6)} SOR</span>
                 </div>
               ))}
             </div>
@@ -162,7 +162,7 @@ const ClaimRewards = () => {
             <div className="flex flex-col items-center justify-center py-20 text-center">
               <Droplets className="w-8 h-8 text-gold-muted/30 mb-3" />
               <span className="font-mono text-xs text-muted-foreground">
-                {walletAddress ? "No extraction history yet" : "Connect wallet to view history"}
+                {walletAddress ? "No claims yet" : "Connect wallet to view history"}
               </span>
             </div>
           )}
