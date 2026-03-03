@@ -17,19 +17,19 @@ const MetricCard = ({ label, value, change, positive, icon: Icon, delay = 0 }: M
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay, duration: 0.4 }}
-      className="relative bg-card border border-border p-5 group hover:border-flame/30 transition-all duration-300"
+      className="relative bg-oil-light border border-border p-5 group hover:border-gold/20 transition-all duration-300"
     >
-      {/* Top accent line */}
-      <div className="absolute top-0 left-0 w-0 h-[2px] bg-flame group-hover:w-full transition-all duration-500" />
+      {/* Gold accent line on hover */}
+      <div className="absolute top-0 left-0 w-0 h-[2px] gradient-gold group-hover:w-full transition-all duration-500" />
 
       <div className="flex items-center justify-between mb-4">
-        <div className="w-8 h-8 bg-secondary flex items-center justify-center">
-          <Icon className="w-4 h-4 text-muted-foreground group-hover:text-flame transition-colors" />
+        <div className="w-8 h-8 bg-oil-sheen flex items-center justify-center">
+          <Icon className="w-4 h-4 text-gold-muted group-hover:text-gold transition-colors" />
         </div>
         {change && (
           <span className={`font-mono text-xs px-2 py-0.5 ${
-            positive 
-              ? "text-success bg-success/10" 
+            positive
+              ? "text-gold bg-gold/10"
               : "text-destructive bg-destructive/10"
           }`}>
             {change}
@@ -37,7 +37,7 @@ const MetricCard = ({ label, value, change, positive, icon: Icon, delay = 0 }: M
         )}
       </div>
 
-      <span className="font-mono text-[10px] text-muted-foreground tracking-[0.2em] uppercase block mb-1">
+      <span className="font-mono text-[10px] text-gold-muted tracking-[0.2em] uppercase block mb-1">
         {label}
       </span>
       <div className="font-mono text-xl sm:text-2xl font-bold text-foreground">

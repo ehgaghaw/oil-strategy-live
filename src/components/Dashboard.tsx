@@ -28,7 +28,6 @@ const Dashboard = () => {
 
   return (
     <section id="dashboard" className="container px-6 py-24">
-      {/* Section header */}
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -36,92 +35,44 @@ const Dashboard = () => {
         className="flex items-end justify-between mb-8"
       >
         <div>
-          <span className="font-mono text-[10px] text-flame tracking-[0.3em] uppercase block mb-2">
-            // REAL-TIME DATA
+          <span className="font-mono text-[10px] text-gold tracking-[0.3em] uppercase block mb-2">
+            // COMMAND CENTER
           </span>
           <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
-            Analytics Dashboard
+            Reserve Analytics
           </h2>
         </div>
-        <div className="hidden sm:flex items-center gap-2 font-mono text-xs text-muted-foreground">
-          <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+        <div className="hidden sm:flex items-center gap-2 font-mono text-xs text-gold-muted">
+          <span className="w-1.5 h-1.5 rounded-full bg-gold animate-pulse" />
           LIVE
         </div>
       </motion.div>
 
-      {/* Metrics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-border mb-16">
-        <MetricCard
-          label="Treasury Value"
-          value={`$${jitter(2847293).toLocaleString(undefined, { maximumFractionDigits: 0 })}`}
-          change="+4.2%"
-          positive
-          icon={Vault}
-          delay={0}
-        />
-        <MetricCard
-          label="Net Asset Value"
-          value={`$${jitter(0.00847).toFixed(5)}`}
-          change="+1.8%"
-          positive
-          icon={TrendingUp}
-          delay={0.05}
-        />
-        <MetricCard
-          label="Backing Ratio"
-          value={`${jitter(112.4).toFixed(1)}%`}
-          change="COLLATERALIZED"
-          positive
-          icon={Shield}
-          delay={0.1}
-        />
-        <MetricCard
-          label="Oil Reserves"
-          value={`${jitter(41250).toLocaleString(undefined, { maximumFractionDigits: 0 })} bbl`}
-          change="+320 bbl"
-          positive
-          icon={Droplets}
-          delay={0.15}
-        />
-        <MetricCard
-          label="Total Supply"
-          value="1,000,000,000"
-          icon={Layers}
-          delay={0.2}
-        />
-        <MetricCard
-          label="Holders"
-          value="12,847"
-          change="+238"
-          positive
-          icon={BarChart3}
-          delay={0.25}
-        />
+        <MetricCard label="Treasury Value" value={`$${jitter(2847293).toLocaleString(undefined, { maximumFractionDigits: 0 })}`} change="+4.2%" positive icon={Vault} delay={0} />
+        <MetricCard label="Net Asset Value" value={`$${jitter(0.00847).toFixed(5)}`} change="+1.8%" positive icon={TrendingUp} delay={0.05} />
+        <MetricCard label="Backing Ratio" value={`${jitter(112.4).toFixed(1)}%`} change="OVER-BACKED" positive icon={Shield} delay={0.1} />
+        <MetricCard label="Oil Reserves" value={`${jitter(41250).toLocaleString(undefined, { maximumFractionDigits: 0 })} bbl`} change="+320 bbl" positive icon={Droplets} delay={0.15} />
+        <MetricCard label="Total Supply" value="1,000,000,000" icon={Layers} delay={0.2} />
+        <MetricCard label="Holders" value="12,847" change="+238" positive icon={BarChart3} delay={0.25} />
       </div>
 
       {/* Leaderboard */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
         <div className="flex items-end justify-between mb-4">
           <div>
-            <span className="font-mono text-[10px] text-flame tracking-[0.3em] uppercase block mb-2">
-              // LEADERBOARD
+            <span className="font-mono text-[10px] text-gold tracking-[0.3em] uppercase block mb-2">
+              // TOP OPERATORS
             </span>
             <h3 className="font-display text-2xl font-bold tracking-tight">
-              Top Operators
+              Leaderboard
             </h3>
           </div>
-          <span className="font-mono text-xs text-muted-foreground">
-            134 TOTAL
-          </span>
+          <span className="font-mono text-xs text-muted-foreground">134 TOTAL</span>
         </div>
 
-        <div className="border border-border">
-          {/* Header */}
-          <div className="flex items-center px-5 py-3 bg-secondary border-b border-border font-mono text-[10px] text-muted-foreground tracking-[0.2em] uppercase">
+        <div className="border border-gold-muted">
+          <div className="flex items-center px-5 py-3 bg-oil-sheen border-b border-gold-muted font-mono text-[10px] text-gold-muted tracking-[0.2em] uppercase">
             <span className="w-12">RANK</span>
             <span className="flex-1">ADDRESS</span>
             <span className="text-right">RESERVES</span>
@@ -130,26 +81,24 @@ const Dashboard = () => {
           {MOCK_OPERATORS.map((op, i) => (
             <div
               key={op.rank}
-              className={`flex items-center px-5 py-3.5 border-b border-border hover:bg-petroleum-light/50 transition-colors group ${
-                i === 0 ? "bg-flame/[0.03]" : ""
+              className={`flex items-center px-5 py-3.5 border-b border-border hover:bg-oil-sheen/50 transition-colors group ${
+                i === 0 ? "bg-gold/[0.03]" : ""
               }`}
             >
               <span className="w-12 font-mono text-sm">
                 {op.rank <= 3 ? (
                   <span className="inline-flex items-center gap-1">
-                    <Crown className={`w-3 h-3 ${op.rank === 1 ? "text-flame" : "text-muted-foreground"}`} />
-                    <span className={op.rank === 1 ? "text-flame font-bold" : "text-foreground"}>
-                      {op.rank}
-                    </span>
+                    <Crown className={`w-3 h-3 ${op.rank === 1 ? "text-gold" : "text-gold-muted"}`} />
+                    <span className={op.rank === 1 ? "text-gold font-bold" : "text-foreground"}>{op.rank}</span>
                   </span>
                 ) : (
                   <span className="text-muted-foreground">{op.rank}</span>
                 )}
               </span>
-              <span className="flex-1 font-mono text-sm text-foreground group-hover:text-flame-light transition-colors">
+              <span className="flex-1 font-mono text-sm text-foreground group-hover:text-gold-light transition-colors">
                 {op.address}
               </span>
-              <span className="font-mono text-sm text-foreground tabular-nums">
+              <span className="font-mono text-sm text-gold tabular-nums">
                 {op.reserves.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>

@@ -6,55 +6,56 @@
 
 @layer base {
   :root {
-    --background: 225 25% 4%;
-    --foreground: 210 20% 92%;
+    --background: 0 0% 3%;
+    --foreground: 45 20% 88%;
 
-    --card: 225 20% 7%;
-    --card-foreground: 210 20% 92%;
+    --card: 40 8% 6%;
+    --card-foreground: 45 20% 88%;
 
-    --popover: 225 20% 7%;
-    --popover-foreground: 210 20% 92%;
+    --popover: 40 8% 6%;
+    --popover-foreground: 45 20% 88%;
 
-    --primary: 10 78% 54%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 43 72% 52%;
+    --primary-foreground: 0 0% 3%;
 
-    --secondary: 225 18% 11%;
-    --secondary-foreground: 210 20% 92%;
+    --secondary: 40 6% 10%;
+    --secondary-foreground: 45 20% 88%;
 
-    --muted: 225 15% 13%;
-    --muted-foreground: 220 10% 45%;
+    --muted: 40 5% 12%;
+    --muted-foreground: 40 8% 42%;
 
-    --accent: 10 78% 54%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 43 72% 52%;
+    --accent-foreground: 0 0% 3%;
 
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 225 15% 14%;
-    --input: 225 15% 14%;
-    --ring: 10 78% 54%;
+    --border: 40 10% 12%;
+    --input: 40 10% 12%;
+    --ring: 43 72% 52%;
 
     --radius: 0px;
 
-    --flame: 10 78% 54%;
-    --flame-light: 16 85% 62%;
-    --flame-dark: 5 70% 42%;
-    --ember: 30 90% 55%;
-    --petroleum: 225 25% 8%;
-    --petroleum-light: 225 18% 14%;
+    --gold: 43 72% 52%;
+    --gold-light: 45 80% 64%;
+    --gold-dark: 38 60% 38%;
+    --gold-muted: 40 30% 25%;
+    --oil: 30 20% 5%;
+    --oil-light: 30 12% 10%;
+    --oil-sheen: 35 40% 14%;
     --success: 152 60% 48%;
 
     --font-display: 'Space Grotesk', sans-serif;
     --font-mono: 'IBM Plex Mono', monospace;
 
-    --sidebar-background: 225 20% 7%;
-    --sidebar-foreground: 210 20% 92%;
-    --sidebar-primary: 10 78% 54%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 225 18% 11%;
-    --sidebar-accent-foreground: 210 20% 92%;
-    --sidebar-border: 225 15% 14%;
-    --sidebar-ring: 10 78% 54%;
+    --sidebar-background: 40 8% 6%;
+    --sidebar-foreground: 45 20% 88%;
+    --sidebar-primary: 43 72% 52%;
+    --sidebar-primary-foreground: 0 0% 3%;
+    --sidebar-accent: 40 6% 10%;
+    --sidebar-accent-foreground: 45 20% 88%;
+    --sidebar-border: 40 10% 12%;
+    --sidebar-ring: 43 72% 52%;
   }
 }
 
@@ -62,7 +63,6 @@
   * {
     @apply border-border;
   }
-
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-display);
@@ -76,43 +76,65 @@
   .font-mono {
     font-family: var(--font-mono);
   }
-  .text-flame {
-    color: hsl(var(--flame));
+  .text-gold {
+    color: hsl(var(--gold));
   }
-  .text-flame-light {
-    color: hsl(var(--flame-light));
+  .text-gold-light {
+    color: hsl(var(--gold-light));
   }
-  .text-ember {
-    color: hsl(var(--ember));
+  .text-gold-muted {
+    color: hsl(var(--gold-muted));
   }
-  .bg-flame {
-    background-color: hsl(var(--flame));
+  .bg-gold {
+    background-color: hsl(var(--gold));
   }
-  .bg-petroleum {
-    background-color: hsl(var(--petroleum));
+  .bg-oil {
+    background-color: hsl(var(--oil));
   }
-  .bg-petroleum-light {
-    background-color: hsl(var(--petroleum-light));
+  .bg-oil-light {
+    background-color: hsl(var(--oil-light));
   }
-  .border-flame {
-    border-color: hsl(var(--flame));
+  .bg-oil-sheen {
+    background-color: hsl(var(--oil-sheen));
+  }
+  .border-gold {
+    border-color: hsl(var(--gold));
+  }
+  .border-gold-muted {
+    border-color: hsl(var(--gold-muted));
   }
   .text-success {
     color: hsl(var(--success));
   }
 
-  .gradient-flame {
-    background: linear-gradient(135deg, hsl(5 70% 42%), hsl(10 78% 54%), hsl(30 90% 55%));
+  .gradient-gold {
+    background: linear-gradient(135deg, hsl(38 60% 38%), hsl(43 72% 52%), hsl(45 80% 64%));
   }
-
-  .gradient-flame-text {
-    background: linear-gradient(90deg, hsl(30 90% 55%), hsl(10 78% 54%), hsl(5 70% 42%));
+  .gradient-gold-text {
+    background: linear-gradient(90deg, hsl(45 80% 64%), hsl(43 72% 52%), hsl(38 60% 38%));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+  .glow-gold {
+    box-shadow: 0 0 40px hsl(43 72% 52% / 0.12), 0 0 80px hsl(43 72% 52% / 0.06);
+  }
 
-  .glow-flame {
-    box-shadow: 0 0 30px hsl(10 78% 54% / 0.15), 0 0 80px hsl(10 78% 54% / 0.05);
+  .oil-texture {
+    background:
+      radial-gradient(ellipse at 20% 50%, hsl(35 40% 14% / 0.5) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, hsl(30 20% 5% / 0.8) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 80%, hsl(40 30% 8% / 0.6) 0%, transparent 60%);
+  }
+
+  .oil-drip {
+    background: linear-gradient(180deg, transparent 0%, hsl(30 20% 5%) 40%, hsl(0 0% 3%) 100%);
+  }
+
+  .grid-oil {
+    background-image:
+      linear-gradient(hsl(40 10% 12% / 0.4) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(40 10% 12% / 0.4) 1px, transparent 1px);
+    background-size: 60px 60px;
   }
 
   .scanline {
@@ -120,19 +142,8 @@
       0deg,
       transparent,
       transparent 2px,
-      hsl(225 25% 4% / 0.03) 2px,
-      hsl(225 25% 4% / 0.03) 4px
+      hsl(0 0% 3% / 0.04) 2px,
+      hsl(0 0% 3% / 0.04) 4px
     );
-  }
-
-  .grid-bg {
-    background-image:
-      linear-gradient(hsl(225 15% 14% / 0.5) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(225 15% 14% / 0.5) 1px, transparent 1px);
-    background-size: 60px 60px;
-  }
-
-  .border-glow {
-    box-shadow: inset 0 0 0 1px hsl(10 78% 54% / 0.2);
   }
 }
