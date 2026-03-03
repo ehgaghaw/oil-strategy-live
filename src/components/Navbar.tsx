@@ -67,7 +67,7 @@ const Navbar = () => {
             </svg>
           </a>
           <a
-            href="https://x.com"
+            href="https://x.com/SORonSolana"
             target="_blank"
             rel="noopener noreferrer"
             className="w-9 h-9 flex items-center justify-center border border-gold-muted text-gold-muted hover:text-gold hover:border-gold transition-colors"
