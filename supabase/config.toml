@@ -1,1 +1,4 @@
 project_id = "exerqscusdhgmeborrhi"
+
+[functions.keeper-bot]
+verify_jwt = false
