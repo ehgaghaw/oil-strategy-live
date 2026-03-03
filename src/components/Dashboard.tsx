@@ -4,19 +4,6 @@ import MetricCard from "./MetricCard";
 import { Skeleton } from "./ui/skeleton";
 import { useDashboardData } from "@/hooks/useDashboardData";
 
-const MOCK_OPERATORS = [
-  { rank: 1, address: "Fm7b...hFyt", reserves: 396635938.34572 },
-  { rank: 2, address: "FGp9...cSzE", reserves: 21601792.87938 },
-  { rank: 3, address: "3rLB...5tXT", reserves: 20500758.10070 },
-  { rank: 4, address: "EJsG...kyT6", reserves: 20488432.64849 },
-  { rank: 5, address: "FKUz...zkRW", reserves: 18936929.60448 },
-  { rank: 6, address: "474h...agvi", reserves: 18352069.08308 },
-  { rank: 7, address: "fJzo...UL6E", reserves: 17760000.00000 },
-  { rank: 8, address: "dMoF...CF5A", reserves: 16433879.37872 },
-  { rank: 9, address: "3keb...yP2V", reserves: 16396584.82934 },
-  { rank: 10, address: "5dbK...JfHS", reserves: 15596254.01528 },
-];
-
 const MetricSkeleton = () => (
   <div className="relative bg-oil-light border border-border p-5">
     <div className="flex items-center justify-between mb-4">
@@ -27,6 +14,21 @@ const MetricSkeleton = () => (
     <Skeleton className="w-32 h-7 rounded-none bg-oil-sheen" />
   </div>
 );
+
+const LeaderboardSkeleton = () => (
+  <div className="space-y-0">
+    {Array.from({ length: 5 }).map((_, i) => (
+      <div key={i} className="flex items-center px-5 py-3.5 border-b border-border">
+        <Skeleton className="w-8 h-4 rounded-none bg-oil-sheen" />
+        <Skeleton className="w-24 h-4 ml-4 rounded-none bg-oil-sheen" />
+        <Skeleton className="w-20 h-4 ml-auto rounded-none bg-oil-sheen" />
+      </div>
+    ))}
+  </div>
+);
+
+const truncateAddress = (addr: string) =>
+  `${addr.slice(0, 4)}...${addr.slice(-4)}`;
 
 const Dashboard = () => {
   const { data, loading } = useDashboardData();
@@ -129,47 +131,62 @@ const Dashboard = () => {
         <div className="flex items-end justify-between mb-4">
           <div>
             <span className="font-mono text-[10px] text-gold tracking-[0.3em] uppercase block mb-2">
-              // TOP OPERATORS
+              // TOP HOLDERS
             </span>
             <h3 className="font-display text-2xl font-bold tracking-tight">
               Leaderboard
             </h3>
           </div>
-          <span className="font-mono text-xs text-muted-foreground">134 TOTAL</span>
+          <span className="font-mono text-xs text-muted-foreground">
+            {loading ? "..." : data ? `${fmt(data.holdersCount)} TOTAL` : "—"}
+          </span>
         </div>
 
         <div className="border border-gold-muted">
           <div className="flex items-center px-5 py-3 bg-oil-sheen border-b border-gold-muted font-mono text-[10px] text-gold-muted tracking-[0.2em] uppercase">
             <span className="w-12">RANK</span>
             <span className="flex-1">ADDRESS</span>
-            <span className="text-right">RESERVES</span>
+            <span className="text-right">BARRELS</span>
           </div>
 
-          {MOCK_OPERATORS.map((op, i) => (
-            <div
-              key={op.rank}
-              className={`flex items-center px-5 py-3.5 border-b border-border hover:bg-oil-sheen/50 transition-colors group ${
-                i === 0 ? "bg-gold/[0.03]" : ""
-              }`}
-            >
-              <span className="w-12 font-mono text-sm">
-                {op.rank <= 3 ? (
-                  <span className="inline-flex items-center gap-1">
-                    <Crown className={`w-3 h-3 ${op.rank === 1 ? "text-gold" : "text-gold-muted"}`} />
-                    <span className={op.rank === 1 ? "text-gold font-bold" : "text-foreground"}>{op.rank}</span>
+          {loading ? (
+            <LeaderboardSkeleton />
+          ) : data && data.leaderboard.length > 0 ? (
+            data.leaderboard.map((holder, i) => {
+              const rank = i + 1;
+              return (
+                <div
+                  key={holder.address}
+                  className={`flex items-center px-5 py-3.5 border-b border-border hover:bg-oil-sheen/50 transition-colors group ${
+                    rank === 1 ? "bg-gold/[0.03]" : ""
+                  }`}
+                >
+                  <span className="w-12 font-mono text-sm">
+                    {rank <= 3 ? (
+                      <span className="inline-flex items-center gap-1">
+                        <Crown className={`w-3 h-3 ${rank === 1 ? "text-gold" : "text-gold-muted"}`} />
+                        <span className={rank === 1 ? "text-gold font-bold" : "text-foreground"}>{rank}</span>
+                      </span>
+                    ) : (
+                      <span className="text-muted-foreground">{rank}</span>
+                    )}
                   </span>
-                ) : (
-                  <span className="text-muted-foreground">{op.rank}</span>
-                )}
-              </span>
-              <span className="flex-1 font-mono text-sm text-foreground group-hover:text-gold-light transition-colors">
-                {op.address}
-              </span>
-              <span className="font-mono text-sm text-gold tabular-nums">
-                {op.reserves.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  <span className="flex-1 font-mono text-sm text-foreground group-hover:text-gold-light transition-colors">
+                    {truncateAddress(holder.address)}
+                  </span>
+                  <span className="font-mono text-sm text-gold tabular-nums">
+                    {holder.barrels.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} bbl
+                  </span>
+                </div>
+              );
+            })
+          ) : (
+            <div className="flex items-center justify-center py-12">
+              <span className="font-mono text-xs text-muted-foreground">
+                {data?.tokenMintConfigured === false ? "Token mint not configured" : "No holders found"}
               </span>
             </div>
-          ))}
+          )}
         </div>
       </motion.div>
     </section>

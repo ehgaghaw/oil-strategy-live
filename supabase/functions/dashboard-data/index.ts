@@ -49,6 +49,7 @@ serve(async (req) => {
 
     // 4. Fetch $SOR token supply via Helius RPC
     let circulatingSupply = 0;
+    let sorPriceUsd = 0;
     if (SOR_MINT !== "PLACEHOLDER_MINT_ADDRESS") {
       const supplyRes = await fetch(`https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`, {
         method: "POST",
@@ -66,23 +67,27 @@ serve(async (req) => {
 
     const nav = circulatingSupply > 0 ? treasuryValue / circulatingSupply : 0;
 
-    // 5. Fetch market cap from DexScreener
+    // 5. Fetch market cap + SOR price from DexScreener
     let marketCap = 0;
     if (SOR_MINT !== "PLACEHOLDER_MINT_ADDRESS") {
       const dexRes = await fetch(
         `https://api.dexscreener.com/latest/dex/tokens/${SOR_MINT}`
       );
       const dexData = await dexRes.json();
-      marketCap = dexData?.pairs?.[0]?.marketCap ?? 0;
+      const pair = dexData?.pairs?.[0];
+      marketCap = pair?.marketCap ?? 0;
+      sorPriceUsd = parseFloat(pair?.priceUsd ?? "0");
     }
 
     const backingRatio = marketCap > 0 ? (treasuryValue / marketCap) * 100 : 0;
 
-    // 6. Fetch $SOR holders count via Helius getTokenAccounts
+    // 6. Fetch all $SOR holders via Helius getTokenAccounts (for count + leaderboard)
     let holdersCount = 0;
+    const leaderboard: { address: string; balance: number; barrels: number }[] = [];
+
     if (SOR_MINT !== "PLACEHOLDER_MINT_ADDRESS") {
       let page = 1;
-      let allOwners = new Set<string>();
+      let allAccounts: { owner: string; amount: number }[] = [];
       let hasMore = true;
 
       while (hasMore && page <= 10) {
@@ -105,13 +110,57 @@ serve(async (req) => {
         );
         const holdersData = await holdersRes.json();
         const accounts = holdersData?.result?.token_accounts ?? [];
-        accounts.forEach((a: any) => {
-          if (a.owner) allOwners.add(a.owner);
-        });
+        for (const a of accounts) {
+          if (a.owner && Number(a.amount) > 0) {
+            allAccounts.push({ owner: a.owner, amount: Number(a.amount) });
+          }
+        }
         hasMore = accounts.length === 1000;
         page++;
       }
-      holdersCount = allOwners.size;
+
+      // Aggregate by owner (in case of multiple token accounts)
+      const ownerMap = new Map<string, number>();
+      for (const acc of allAccounts) {
+        ownerMap.set(acc.owner, (ownerMap.get(acc.owner) ?? 0) + acc.amount);
+      }
+
+      holdersCount = ownerMap.size;
+
+      // Sort descending, take top 25
+      const sorted = [...ownerMap.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 25);
+
+      // Get token decimals to convert raw amount
+      let decimals = 6; // default
+      try {
+        const decRes = await fetch(`https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            jsonrpc: "2.0",
+            id: 1,
+            method: "getTokenSupply",
+            params: [SOR_MINT],
+          }),
+        });
+        const decData = await decRes.json();
+        decimals = decData?.result?.value?.decimals ?? 6;
+      } catch { /* use default */ }
+
+      for (const [owner, rawBalance] of sorted) {
+        const uiBalance = rawBalance / Math.pow(10, decimals);
+        // barrels = (SOR_balance * SOR_price_usd) / WTI_price
+        const barrels = wtiPrice > 0 && sorPriceUsd > 0
+          ? (uiBalance * sorPriceUsd) / wtiPrice
+          : 0;
+        leaderboard.push({
+          address: owner,
+          balance: uiBalance,
+          barrels,
+        });
+      }
     }
 
     const result = {
@@ -123,10 +172,12 @@ serve(async (req) => {
       isOverBacked: backingRatio >= 100,
       oilReserves,
       wtiPrice,
+      sorPriceUsd,
       circulatingSupply,
       holdersCount,
       marketCap,
       tokenMintConfigured: SOR_MINT !== "PLACEHOLDER_MINT_ADDRESS",
+      leaderboard,
     };
 
     return new Response(JSON.stringify(result), {
