@@ -32,7 +32,7 @@ const HeroSection = () => {
         <h1 className="font-display text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] font-bold leading-[1.05] tracking-tight text-foreground">
           HOLD <span className="gradient-gold-text">$SOR</span>.
           <br />
-          EARN OIL.
+          EARN <span className="gradient-gold-text">$SOR</span>.
           <br />
           EVERY 15 MINUTES.
         </h1>
@@ -57,9 +57,7 @@ const HeroSection = () => {
         transition={{ duration: 0.5, delay: 0.4 }}
         className="relative z-10 max-w-lg text-center text-muted-foreground text-base leading-relaxed font-display font-light"
       >
-        Pump.fun creator fees are automatically swapped into oil-backed tokens.
-        Rewards accrue every 15 minutes — connect your wallet and claim anytime.
-        No staking, no lock-ups.
+        Every trade generates creator fees routed to treasury. SOL is used to buy back $SOR from the market and redistribute to all holders every 15 minutes — proportional to your holdings. No staking, no lock-ups.
       </motion.p>
 
       {/* CTAs */}
