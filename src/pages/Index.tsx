@@ -41,9 +41,9 @@ const Index = () => {
         <footer className="border-t border-gold-muted py-10">
           <div className="container px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <img src={oilLogo} alt="WTI" className="w-7 h-7 object-contain" />
+              <img src={oilLogo} alt="SOR" className="w-7 h-7 object-contain" />
               <span className="font-display text-sm font-semibold text-gold">
-                OIL STRATEGY
+                STRATEGIC OIL RESERVE
               </span>
             </div>
             <p className="font-mono text-[10px] text-gold-muted tracking-[0.2em]">

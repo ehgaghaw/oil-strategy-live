@@ -1,22 +1,22 @@
 #!/usr/bin/env node
 
 /**
- * WTI Keeper Bot — Runs every 30 minutes
+ * SOR Keeper Bot — Runs every 15 minutes
  * 
  * What it does:
  * 1. Checks treasury wallet SOL balance
- * 2. Swaps SOL → USDC via Jupiter Aggregator
- * 3. Snapshots all $WTI token holders via Helius
- * 4. Calculates proportional rewards per holder
+ * 2. Swaps 80% SOL → $SOR via Jupiter (buyback)
+ * 3. Snapshots all $SOR token holders via Helius
+ * 4. Calculates proportional $SOR rewards per holder
  * 5. Writes new epoch + holder_rewards to Supabase
  * 
  * Run with: node keeper-bot.mjs
- * Schedule with cron: */30 * * * * node /path/to/keeper-bot.mjs
+ * Schedule with cron: */15 * * * * node /path/to/keeper-bot.mjs
  * 
  * Required env vars:
  *   HELIUS_API_KEY        - Helius RPC API key
  *   TREASURY_PRIVATE_KEY  - Treasury wallet private key (base58)
- *   WTI_MINT_ADDRESS      - $WTI token mint address
+ *   SOR_MINT_ADDRESS      - $SOR token mint address
  *   SUPABASE_URL          - Supabase project URL
  *   SUPABASE_SERVICE_KEY  - Supabase service role key
  */
@@ -29,15 +29,13 @@ import fetch from "node-fetch";
 // ─── Config ───────────────────────────────────────────────────────────────────
 const HELIUS_API_KEY = process.env.HELIUS_API_KEY;
 const TREASURY_PRIVATE_KEY = process.env.TREASURY_PRIVATE_KEY;
-const WTI_MINT_ADDRESS = process.env.WTI_MINT_ADDRESS;
+const SOR_MINT_ADDRESS = process.env.SOR_MINT_ADDRESS;
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
-// USDC on Solana mainnet
-const USDC_MINT = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 const SOL_MINT = "So11111111111111111111111111111111111111112";
 
-// Minimum SOL to keep in treasury for rent/fees
+// Minimum SOL to keep in treasury for rent/fees (20%)
 const MIN_SOL_RESERVE = 0.05;
 
 // ─── Validate env ─────────────────────────────────────────────────────────────
@@ -45,7 +43,7 @@ function validateEnv() {
   const required = {
     HELIUS_API_KEY,
     TREASURY_PRIVATE_KEY,
-    WTI_MINT_ADDRESS,
+    SOR_MINT_ADDRESS,
     SUPABASE_URL,
     SUPABASE_SERVICE_KEY,
   };
@@ -77,14 +75,14 @@ async function getTreasuryBalance(connection, treasuryKeypair) {
   return solBalance;
 }
 
-// ─── Step 2: Swap SOL → USDC via Jupiter ──────────────────────────────────────
-async function swapSolToUsdc(connection, treasuryKeypair, solAmount) {
+// ─── Step 2: Swap 80% SOL → $SOR via Jupiter (buyback) ───────────────────────
+async function swapSolToSor(connection, treasuryKeypair, solAmount) {
   const lamports = Math.floor(solAmount * 1e9);
 
-  console.log(`🔄 Swapping ${solAmount.toFixed(6)} SOL → USDC via Jupiter...`);
+  console.log(`🔄 Swapping ${solAmount.toFixed(6)} SOL → $SOR via Jupiter (buyback)...`);
 
-  // Get quote
-  const quoteUrl = `https://quote-api.jup.ag/v6/quote?inputMint=${SOL_MINT}&outputMint=${USDC_MINT}&amount=${lamports}&slippageBps=50`;
+  // Get quote: SOL → SOR
+  const quoteUrl = `https://quote-api.jup.ag/v6/quote?inputMint=${SOL_MINT}&outputMint=${SOR_MINT_ADDRESS}&amount=${lamports}&slippageBps=50`;
   const quoteRes = await fetch(quoteUrl);
   const quoteData = await quoteRes.json();
 
@@ -92,8 +90,8 @@ async function swapSolToUsdc(connection, treasuryKeypair, solAmount) {
     throw new Error(`Jupiter quote failed: ${JSON.stringify(quoteData)}`);
   }
 
-  const usdcOut = Number(quoteData.outAmount) / 1e6;
-  console.log(`📊 Quote: ${solAmount.toFixed(6)} SOL → ${usdcOut.toFixed(6)} USDC`);
+  const sorOut = Number(quoteData.outAmount);
+  console.log(`📊 Quote: ${solAmount.toFixed(6)} SOL → ${sorOut} $SOR`);
 
   // Get swap transaction
   const swapRes = await fetch("https://quote-api.jup.ag/v6/swap", {
@@ -125,14 +123,14 @@ async function swapSolToUsdc(connection, treasuryKeypair, solAmount) {
 
   console.log(`✅ Swap tx sent: ${txid}`);
   await connection.confirmTransaction(txid, "confirmed");
-  console.log(`✅ Swap confirmed. Received ~${usdcOut.toFixed(6)} USDC`);
+  console.log(`✅ Swap confirmed. Received ${sorOut} $SOR`);
 
-  return { solSwapped: solAmount, usdcReceived: usdcOut };
+  return { solSwapped: solAmount, sorReceived: sorOut };
 }
 
-// ─── Step 3: Snapshot all $WTI holders via Helius ─────────────────────────────
+// ─── Step 3: Snapshot all $SOR holders via Helius ─────────────────────────────
 async function snapshotHolders() {
-  console.log("📸 Snapshotting $WTI holders via Helius...");
+  console.log("📸 Snapshotting $SOR holders via Helius...");
 
   let page = 1;
   let allHolders = [];
@@ -149,7 +147,7 @@ async function snapshotHolders() {
           id: `holder-snapshot-${page}`,
           method: "getTokenAccounts",
           params: {
-            mint: WTI_MINT_ADDRESS,
+            mint: SOR_MINT_ADDRESS,
             page,
             limit: 1000,
           },
@@ -168,9 +166,8 @@ async function snapshotHolders() {
     }
   }
 
-  console.log(`📊 Found ${allHolders.length} $WTI holders`);
+  console.log(`📊 Found ${allHolders.length} $SOR holders`);
 
-  // Map to { wallet, balance }
   const holders = allHolders
     .map((acc) => ({
       wallet: acc.owner,
@@ -184,8 +181,7 @@ async function snapshotHolders() {
 }
 
 // ─── Step 4: Calculate rewards & write to DB ──────────────────────────────────
-async function createEpoch(supabase, { solSwapped, usdcReceived, holders, totalSupply }) {
-  // Get next epoch number
+async function createEpoch(supabase, { solSwapped, sorReceived, holders, totalSupply }) {
   const { data: lastEpoch } = await supabase
     .from("epochs")
     .select("epoch_number")
@@ -196,31 +192,29 @@ async function createEpoch(supabase, { solSwapped, usdcReceived, holders, totalS
   const epochNumber = (lastEpoch?.epoch_number ?? 0) + 1;
   console.log(`📝 Creating epoch #${epochNumber}...`);
 
-  // Insert epoch
   const { data: epoch, error: epochError } = await supabase
     .from("epochs")
     .insert({
       epoch_number: epochNumber,
-      total_rewards_usdc: usdcReceived,
+      total_rewards_usdc: sorReceived, // storing SOR amount in this column
       total_supply_snapshot: totalSupply,
       holders_count: holders.length,
       sol_swapped: solSwapped,
-      usdc_received: usdcReceived,
+      usdc_received: sorReceived,
     })
     .select()
     .single();
 
   if (epochError) throw epochError;
 
-  // Calculate each holder's share
+  // Each holder's proportional $SOR share
   const rewardRows = holders.map((h) => ({
     epoch_id: epoch.id,
     wallet_address: h.wallet,
     token_balance: h.balance,
-    claimable_usdc: (h.balance / totalSupply) * usdcReceived,
+    claimable_usdc: (h.balance / totalSupply) * sorReceived,
   }));
 
-  // Batch insert (chunks of 500)
   for (let i = 0; i < rewardRows.length; i += 500) {
     const chunk = rewardRows.slice(i, i + 500);
     const { error: insertError } = await supabase
@@ -231,28 +225,30 @@ async function createEpoch(supabase, { solSwapped, usdcReceived, holders, totalS
     console.log(`  Inserted rewards ${i + 1} - ${Math.min(i + 500, rewardRows.length)}`);
   }
 
-  console.log(`✅ Epoch #${epochNumber} created: ${usdcReceived.toFixed(6)} USDC → ${holders.length} holders`);
+  console.log(`✅ Epoch #${epochNumber} created: ${sorReceived} $SOR → ${holders.length} holders`);
   return epoch;
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 async function main() {
-  console.log("🛢️  WTI Keeper Bot starting...");
+  console.log("🛢️  SOR Keeper Bot starting...");
   console.log(`⏰ ${new Date().toISOString()}`);
 
   const { connection, treasuryKeypair, supabase } = init();
 
   // 1. Check balance
   const solBalance = await getTreasuryBalance(connection, treasuryKeypair);
-  const swappableAmount = solBalance - MIN_SOL_RESERVE;
+  
+  // Keep 20% SOL for fees, swap 80%
+  const swappableAmount = (solBalance - MIN_SOL_RESERVE) * 0.8;
 
   if (swappableAmount <= 0.001) {
     console.log("⚠️  Not enough SOL to swap. Skipping this epoch.");
     return;
   }
 
-  // 2. Swap SOL → USDC
-  const { solSwapped, usdcReceived } = await swapSolToUsdc(
+  // 2. Swap SOL → $SOR (buyback)
+  const { solSwapped, sorReceived } = await swapSolToSor(
     connection,
     treasuryKeypair,
     swappableAmount
@@ -267,7 +263,7 @@ async function main() {
   }
 
   // 4. Create epoch & distribute
-  await createEpoch(supabase, { solSwapped, usdcReceived, holders, totalSupply });
+  await createEpoch(supabase, { solSwapped, sorReceived, holders, totalSupply });
 
   console.log("🛢️  Keeper bot finished successfully.");
 }
