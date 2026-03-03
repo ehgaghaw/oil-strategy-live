@@ -133,7 +133,7 @@ const OilSplashIntro = ({ onComplete }: { onComplete: () => void }) => {
                 animate={phase === "leak" ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
                 transition={{ delay: 0.5, duration: 0.7 }}
               >
-                OIL STRATEGY
+                SOR
               </motion.span>
               <motion.span
                 className="font-mono text-xs text-gold-muted tracking-[0.5em] block mt-2"
