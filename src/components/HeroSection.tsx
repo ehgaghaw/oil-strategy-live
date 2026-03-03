@@ -21,21 +21,6 @@ const HeroSection = () => {
       {/* Grid overlay */}
       <div className="absolute inset-0 grid-oil opacity-20 pointer-events-none" />
 
-      {/* Status badge */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4 }}
-        className="relative z-10 flex items-center gap-2 px-4 py-2 bg-oil-light border border-gold-muted mb-12"
-      >
-        <span className="relative flex h-2 w-2">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold opacity-75" />
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-gold" />
-        </span>
-        <span className="font-mono text-xs text-gold-muted tracking-widest uppercase">
-          ACTIVE OPERATIONS
-        </span>
-      </motion.div>
 
       {/* Main heading */}
       <motion.div
