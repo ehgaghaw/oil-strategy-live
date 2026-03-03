@@ -22,7 +22,7 @@ const Navbar = () => {
           <img src={oilLogo} alt="WTI" className="w-9 h-9 object-contain" />
           <div className="flex flex-col leading-none">
             <span className="font-display text-sm font-bold tracking-tight text-gold">
-              WTI / USOR
+              SOR / USOR
             </span>
             <span className="font-mono text-[10px] text-muted-foreground tracking-widest">
               OIL STRATEGY
