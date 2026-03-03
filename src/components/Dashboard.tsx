@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Vault, TrendingUp, Shield, Droplets, BarChart3, Layers, Crown } from "lucide-react";
 import MetricCard from "./MetricCard";
+import { Skeleton } from "./ui/skeleton";
+import { useDashboardData } from "@/hooks/useDashboardData";
 
 const MOCK_OPERATORS = [
   { rank: 1, address: "Fm7b...hFyt", reserves: 396635938.34572 },
@@ -16,15 +17,22 @@ const MOCK_OPERATORS = [
   { rank: 10, address: "5dbK...JfHS", reserves: 15596254.01528 },
 ];
 
+const MetricSkeleton = () => (
+  <div className="relative bg-oil-light border border-border p-5">
+    <div className="flex items-center justify-between mb-4">
+      <Skeleton className="w-8 h-8 rounded-none bg-oil-sheen" />
+      <Skeleton className="w-16 h-5 rounded-none bg-oil-sheen" />
+    </div>
+    <Skeleton className="w-24 h-3 mb-2 rounded-none bg-oil-sheen" />
+    <Skeleton className="w-32 h-7 rounded-none bg-oil-sheen" />
+  </div>
+);
+
 const Dashboard = () => {
-  const [tick, setTick] = useState(0);
+  const { data, loading } = useDashboardData();
 
-  useEffect(() => {
-    const interval = setInterval(() => setTick((t) => t + 1), 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const jitter = (base: number) => base * (1 + Math.sin(tick * 0.3) * 0.002);
+  const fmt = (n: number, decimals = 0) =>
+    n.toLocaleString(undefined, { maximumFractionDigits: decimals });
 
   return (
     <section id="dashboard" className="container px-6 py-24">
@@ -49,12 +57,71 @@ const Dashboard = () => {
       </motion.div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[1px] bg-border mb-16">
-        <MetricCard label="Treasury Value" value={`$${jitter(2847293).toLocaleString(undefined, { maximumFractionDigits: 0 })}`} change="+4.2%" positive icon={Vault} delay={0} />
-        <MetricCard label="Net Asset Value" value={`$${jitter(0.00847).toFixed(5)}`} change="+1.8%" positive icon={TrendingUp} delay={0.05} />
-        <MetricCard label="Backing Ratio" value={`${jitter(112.4).toFixed(1)}%`} change="OVER-BACKED" positive icon={Shield} delay={0.1} />
-        <MetricCard label="Oil Reserves" value={`${jitter(41250).toLocaleString(undefined, { maximumFractionDigits: 0 })} bbl`} change="+320 bbl" positive icon={Droplets} delay={0.15} />
-        <MetricCard label="Total Supply" value="1,000,000,000" icon={Layers} delay={0.2} />
-        <MetricCard label="Holders" value="12,847" change="+238" positive icon={BarChart3} delay={0.25} />
+        {loading ? (
+          <>
+            <MetricSkeleton />
+            <MetricSkeleton />
+            <MetricSkeleton />
+            <MetricSkeleton />
+            <MetricSkeleton />
+            <MetricSkeleton />
+          </>
+        ) : data ? (
+          <>
+            <MetricCard
+              label="Treasury Value"
+              value={`$${fmt(data.treasuryValue)}`}
+              change={`${fmt(data.solBalance, 2)} SOL`}
+              positive
+              icon={Vault}
+              delay={0}
+            />
+            <MetricCard
+              label="Net Asset Value"
+              value={data.tokenMintConfigured ? `$${fmt(data.nav, 5)}` : "—"}
+              change={data.tokenMintConfigured ? undefined : "MINT NOT SET"}
+              icon={TrendingUp}
+              delay={0.05}
+            />
+            <MetricCard
+              label="Backing Ratio"
+              value={data.tokenMintConfigured ? `${fmt(data.backingRatio, 1)}%` : "—"}
+              change={data.isOverBacked ? "OVER-BACKED" : undefined}
+              positive={data.isOverBacked}
+              icon={Shield}
+              delay={0.1}
+            />
+            <MetricCard
+              label="Oil Reserves"
+              value={`${fmt(data.oilReserves)} bbl`}
+              change={`WTI $${fmt(data.wtiPrice, 2)}`}
+              positive
+              icon={Droplets}
+              delay={0.15}
+            />
+            <MetricCard
+              label="Total Supply"
+              value={data.tokenMintConfigured ? fmt(data.circulatingSupply) : "—"}
+              icon={Layers}
+              delay={0.2}
+            />
+            <MetricCard
+              label="Holders"
+              value={data.tokenMintConfigured ? fmt(data.holdersCount) : "—"}
+              icon={BarChart3}
+              delay={0.25}
+            />
+          </>
+        ) : (
+          <>
+            <MetricCard label="Treasury Value" value="ERR" icon={Vault} delay={0} />
+            <MetricCard label="Net Asset Value" value="ERR" icon={TrendingUp} delay={0.05} />
+            <MetricCard label="Backing Ratio" value="ERR" icon={Shield} delay={0.1} />
+            <MetricCard label="Oil Reserves" value="ERR" icon={Droplets} delay={0.15} />
+            <MetricCard label="Total Supply" value="ERR" icon={Layers} delay={0.2} />
+            <MetricCard label="Holders" value="ERR" icon={BarChart3} delay={0.25} />
+          </>
+        )}
       </div>
 
       {/* Leaderboard */}
