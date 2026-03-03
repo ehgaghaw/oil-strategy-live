@@ -18,8 +18,8 @@ serve(async (req) => {
   if (!TWELVE_DATA_API_KEY) throw new Error("TWELVE_DATA_API_KEY not configured");
 
   const TREASURY_WALLET = "AN1CLgdCYnygqGCCiARUpn8xU1NG3uNym4DFhDowZ6dw";
-  // TODO: Replace with actual pump.fun mint address
-  const TOKEN_MINT = "PLACEHOLDER_MINT_ADDRESS";
+  // TODO: Replace with actual $SOR pump.fun mint address
+  const SOR_MINT = "PLACEHOLDER_MINT_ADDRESS";
 
   try {
     // 1. Fetch treasury SOL balance from Helius
@@ -47,9 +47,9 @@ serve(async (req) => {
     const wtiPrice = parseFloat(wtiData?.price ?? "0");
     const oilReserves = wtiPrice > 0 ? treasuryValue / wtiPrice : 0;
 
-    // 4. Fetch token supply via Helius RPC (getTokenSupply)
+    // 4. Fetch $SOR token supply via Helius RPC
     let circulatingSupply = 0;
-    if (TOKEN_MINT !== "PLACEHOLDER_MINT_ADDRESS") {
+    if (SOR_MINT !== "PLACEHOLDER_MINT_ADDRESS") {
       const supplyRes = await fetch(`https://mainnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -57,7 +57,7 @@ serve(async (req) => {
           jsonrpc: "2.0",
           id: 1,
           method: "getTokenSupply",
-          params: [TOKEN_MINT],
+          params: [SOR_MINT],
         }),
       });
       const supplyData = await supplyRes.json();
@@ -68,9 +68,9 @@ serve(async (req) => {
 
     // 5. Fetch market cap from DexScreener
     let marketCap = 0;
-    if (TOKEN_MINT !== "PLACEHOLDER_MINT_ADDRESS") {
+    if (SOR_MINT !== "PLACEHOLDER_MINT_ADDRESS") {
       const dexRes = await fetch(
-        `https://api.dexscreener.com/latest/dex/tokens/${TOKEN_MINT}`
+        `https://api.dexscreener.com/latest/dex/tokens/${SOR_MINT}`
       );
       const dexData = await dexRes.json();
       marketCap = dexData?.pairs?.[0]?.marketCap ?? 0;
@@ -78,9 +78,9 @@ serve(async (req) => {
 
     const backingRatio = marketCap > 0 ? (treasuryValue / marketCap) * 100 : 0;
 
-    // 6. Fetch holders count via Helius getTokenAccounts
+    // 6. Fetch $SOR holders count via Helius getTokenAccounts
     let holdersCount = 0;
-    if (TOKEN_MINT !== "PLACEHOLDER_MINT_ADDRESS") {
+    if (SOR_MINT !== "PLACEHOLDER_MINT_ADDRESS") {
       let page = 1;
       let allOwners = new Set<string>();
       let hasMore = true;
@@ -96,7 +96,7 @@ serve(async (req) => {
               id: 1,
               method: "getTokenAccounts",
               params: {
-                mint: TOKEN_MINT,
+                mint: SOR_MINT,
                 page,
                 limit: 1000,
               },
@@ -126,7 +126,7 @@ serve(async (req) => {
       circulatingSupply,
       holdersCount,
       marketCap,
-      tokenMintConfigured: TOKEN_MINT !== "PLACEHOLDER_MINT_ADDRESS",
+      tokenMintConfigured: SOR_MINT !== "PLACEHOLDER_MINT_ADDRESS",
     };
 
     return new Response(JSON.stringify(result), {

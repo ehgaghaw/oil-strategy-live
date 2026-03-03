@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Droplets, Wallet, ArrowRight, History, Lock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
-const OIL_PRICE_USD = 68.5;
+// WTI price fetched live; fallback
+const OIL_PRICE_USD_FALLBACK = 68.5;
 
 interface PendingReward {
   id: string;
@@ -70,7 +71,7 @@ const ClaimRewards = () => {
 
   useEffect(() => { if (walletAddress) fetchRewards(walletAddress); }, [walletAddress, fetchRewards]);
 
-  const barrelsEquivalent = pendingUsdc / OIL_PRICE_USD;
+  const barrelsEquivalent = pendingUsdc / OIL_PRICE_USD_FALLBACK;
 
   return (
     <section className="container px-6 py-24">

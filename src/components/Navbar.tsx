@@ -19,13 +19,13 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-gold-muted">
       <div className="container flex items-center justify-between h-16 px-6">
         <div className="flex items-center gap-3">
-          <img src={oilLogo} alt="WTI" className="w-9 h-9 object-contain" />
+          <img src={oilLogo} alt="SOR" className="w-9 h-9 object-contain" />
           <div className="flex flex-col leading-none">
             <span className="font-display text-sm font-bold tracking-tight text-gold">
-              SOR / USOR
+              SOR / SOL
             </span>
             <span className="font-mono text-[10px] text-muted-foreground tracking-widest">
-              OIL STRATEGY
+              STRATEGIC OIL RESERVE
             </span>
           </div>
         </div>

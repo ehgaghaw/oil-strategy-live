@@ -94,7 +94,7 @@ const Dashboard = () => {
             <MetricCard
               label="Oil Reserves"
               value={`${fmt(data.oilReserves)} bbl`}
-              change={`WTI $${fmt(data.wtiPrice, 2)}`}
+              change={`Crude $${fmt(data.wtiPrice, 2)}/bbl`}
               positive
               icon={Droplets}
               delay={0.15}
